@@ -1,0 +1,247 @@
+% 材料与方法 / 实验设计部分
+
+\section{实验设计}
+
+本研究采用一种闭环验证框架，该系统核心创新在于将大语言模型限定为''信息提取与映射器''，并通过知识库校验确保安全性，围绕语音生成电子病历系统的核心功能验证与持续优化需求，构建了一个包含五个关键阶段的完整验证框架，既保证了单次运行的可靠性验证，又为系统的长期演进奠定了坚实的科学基础。
+
+\subsection{数据输入与ASR预处理}
+
+\textbf{目标}：将临床语音输入转化为高准确率的规范化文本，为信息提取奠定可靠基础。
+
+\textbf{流程}：
+
+\begin{quote}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{场景化模板选择}：医生基于当前诊疗场景（如科室、病种、病历类型）从预置模板库中选择结构化模板。该模板库按临床路径设计，包含定义明确的空白槽位（如''主诉''、``现病史''）。
+\item
+  \textbf{专科优化的语音识别}：医生口述语音通过一个经过\textbf{专科热词库}（包含高频医学术语、药品名、检查项目）优化的自动语音识别模型进行转写，生成初始文本。
+\item
+  \textbf{术语标准化与错误修正}：初始文本经由\textbf{术语库}（用于口语到标准术语的映射）和\textbf{错词库}（基于历史ASR错误分析构建）进行自动化后处理，以修正识别错误并统一术语表述。
+\end{enumerate}
+\end{quote}
+
+现有研究表明，基于人工智能的临床语音识别系统在真实医疗场景中已经能够达到较高的听写与自动转写准确率，并在一定程度上减轻医护人员的手工录入负担\cite{ng2025asrreview}。本研究在评估ASR模块时，将参考该系统综述中常用的词错误率（WER）和句错误率（SER）等指标进行对比分析。
+
+\subsection{LLM信息提取与映射}
+
+\textbf{目标}：严格限定LLM任务范围，使其仅从文本中提取原始信息片段并映射至模板槽位，从根本上规避''幻觉''。
+
+\textbf{流程}：
+
+\begin{quote}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  将预处理后的文本与所选模板输入大语言模型。通过精心设计的指令，明确限定LLM的角色为''\textbf{信息提取器}''而非''文本生成器''。
+\item
+  LLM的任务：首先解析模板中各槽位的信息需求，随后从给定文本中定位并抽取出对应的\textbf{原始文本片段}，最后构建一个''槽位-信息片段''的初步映射表。此设计确保所有输出内容均直接源自医生口述，最大程度降低无中生有的风险。
+\end{enumerate}
+\end{quote}
+
+Hu 等对多数据集的临床笔记进行了系统评估，比较了大语言模型与传统预训练模型在命名实体识别和关系抽取任务中的表现\cite{hu2025ie}。其结果表明，大语言模型在准确性上具有优势，但计算开销与推理延迟更高，因此本研究选择让LLM扮演受约束的“信息提取器”，以在安全性、可控性与性能之间取得平衡。
+
+\subsection{信息验证与纠正}
+
+\textbf{目标}：引入医疗知识库对LLM提取的信息进行二次校验，为系统增加一道安全防线，进一步提升了最终输出的准确性与可靠性。
+
+\textbf{流程：}
+
+\begin{quote}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  利用预先构建的知识库（如药品知识库、诊疗规范库），对阶段二生成的初步映射表的关键医疗信息进行存在性验证与逻辑一致性检查进行逐项验证。
+\item
+  校验内容包括但不限于：关键实体（如药品、检查项目）的存在性验证、术语规范性检查以及逻辑一致性判断。对于识别出的错误或疑点，系统进行自动纠正或标记以供审核。
+\end{enumerate}
+\end{quote}
+
+在药品相关信息的验证与标准化方面，可引入如美国国家医学图书馆发布的 RxNorm 等权威药物本体，将自由文本中的药品名称映射到标准化概念标识符，用于一致性校验和后续临床决策支持\cite{rxnorm}。
+
+\subsection{病历生成与输出}
+
+\textbf{目标}：自动化生成结构化病历，并强调医生的最终审核权，确保临床决策的准确性。
+
+\textbf{流程}：
+
+\begin{quote}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{模板填充}：系统将经过验证的准确信息自动填充至模板对应槽位，生成结构完整、内容准确的电子病历草案。
+\item
+  \textbf{人机协同审核}：生成的病历呈现给专业的医生进…472 chars truncated…型生成上下文描述以提升领域专有名词识别能力的工作\cite{llm_asr_context}，进一步优化专科热词识别和术语标准化效果。
+
+\end{enumerate}
+\end{quote}
+
+\subsection{实验评估方案}
+
+为全面评估系统性能，本研究计划采用涵盖客观性能、主观质量、效率增益和核心创新点四个维度的综合评估体系。
+
+\subsubsection{评估目标与维度}
+
+本评估旨在系统回答以下研究问题：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{性能表现}：系统生成的电子病历在内容上是否准确、完整？
+\item
+  \textbf{质量可靠性}：生成病历在临床专家看来是否规范、可靠、实用？
+\item
+  \textbf{效率提升}：系统是否能显著缩短病历书写时间，减轻医生文档负担？
+\item
+  \textbf{安全性}：系统是否能有效抑制大模型的''幻觉''现象？
+\end{enumerate}
+
+\subsubsection{客观性能评估}
+
+采用自动化指标对输出结果进行量化评价。
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{信息提取准确度}：
+\end{enumerate}
+
+\begin{quote}
+\textbf{指标}：\textbf{精确率、召回率、F1分数}。
+
+\textbf{方法}：将LLM的槽位填充任务视为分类问题。将系统提取出的每个信息片段与专家标注的''黄金标准''进行比对，计算其能否在正确槽位被准确识别出的比例。这是评估\textbf{核心创新点（信息提取）}\hspace{0pt}
+最直接的指标。该设计与临床笔记信息抽取领域常用的评估方案一致，便于与已有基于大语言模型的信息抽取研究进行横向对比\cite{hu2025ie}。
+\end{quote}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  \textbf{文本相似度}：
+\end{enumerate}
+
+\begin{quote}
+\textbf{指标}：\textbf{BERTScore}\hspace{0pt}和\textbf{ROUGE-L}。
+
+\textbf{方法}：计算最终生成的病历与医生撰写的标准参考病历之间的相似度。
+
+\textbf{BERTScore}：基于深度学习模型，评估语义层面的相似性，更能捕捉医疗术语的正确性。
+
+\textbf{ROUGE-L}：评估最长公共子序列，衡量信息覆盖的完整性。两者结合，可全面评估生成文本的整体质量。
+\end{quote}
+
+\subsubsection{主观质量评估}
+
+由临床专家进行盲法评审，确保病历的临床可用性。
+
+\begin{quote}
+\textbf{评审人员}：邀请未参与实验的资深临床专家（副主任医师及以上）组成评审小组。
+
+\textbf{评估工具}：采用\textbf{Likert量表}（1=非常不认可，5=非常认可）对以下维度评分：
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{信息完整性}：核心诊疗信息、患者基础信息等无遗漏。
+\item
+  \textbf{术语准确性}：术语使用规范、无错用/滥用医学词汇情况。
+\item
+  \textbf{逻辑一致性}：病史、检查、诊断、治疗之间逻辑自洽，无矛盾。
+\item
+  \textbf{结构规范性}：符合病历书写规范，字段排布、格式统一有序。
+\item
+  \textbf{临床实用性}：能为诊断、治疗方案制定、后续诊疗提供有效参考。
+\item
+  \textbf{可读性：}语言通顺、表述清晰，无歧义，便于医护人员快速阅读。
+\item
+  \textbf{安全性}：患者隐私信息无泄露、数据存储 /
+  传输过程安全可靠。
+\end{enumerate}
+\end{quote}
+
+\begin{quote}
+\textbf{幻觉现象专项评估}：要求专家重点识别并记录生成内容中\textbf{任何未在原始语音输入中提及的虚构信息}，并计算\textbf{幻觉发生率}（出现幻觉的病历数/总病历数）。
+\end{quote}
+
+\subsubsection{效率增益评估}
+
+此环节设置对照实验旨在验证系统实用价值，并与已有“Ambient Clinical Intelligence/nuance DAX”等项目的门诊真实部署研究形成可比，这些研究已证明自动化文档系统可以显著降低文档负担和职业倦怠\cite{dax_burden,haberle2024daxcohort,jamia_dax_site}。
+
+\begin{quote}
+\textbf{基线系统}：为凸显本系统的创新性，需设立合理的基线进行对比：
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{基线1（传统方式）}：医生手动键盘录入。
+\item
+  \textbf{基线2（通用AI方式）}：通用ASR（未经专科优化） +
+  通用LLM（进行自由文本生成，而非信息提取）。此基线用于验证''信息提取''范式相对于''生成式''范式的优势。
+\end{enumerate}
+\end{quote}
+
+\begin{quote}
+\textbf{主要指标}：\textbf{病历书写总耗时}。从医生开始口述到完成病历审核保存的总时间。
+
+\textbf{测量方法}：精确记录每位医生使用不同系统（本系统、基线1、基线2）完成每个病例的时间。
+
+\textbf{统计分析}：采用\textbf{配对t检验}比较本系统与基线系统的平均耗时，检验效率提升的统计学显著性（设定p
+\textless{} 0.05）。
+\end{quote}
+
+\subsubsection{消融实验}
+
+为验证系统中各个组件的必要性，可设计消融实验。
+
+\begin{quote}
+\textbf{设计}：构建系统的简化版本：
+
+\quad \textbf{版本A}：无知识库纠错模块。
+
+\quad \textbf{版本B}：使用自由生成的LLM，而非信息提取模式。
+
+\textbf{比较}：将简化版本与完整系统在客观指标和主观幻觉发生率上进行对比。此举能有力证明''知识库纠错''和''信息提取范式''各自贡献的价值。
+\end{quote}
+
+\subsubsection{数据分析与报告}
+
+所有数据将使用SPSS或R语言进行统计分析。结果将以均值±标准差、百分比等形式呈现，并辅以图表进行可视化。对显著性检验结果进行详细报告。
+
+\begin{center}
+\includegraphics[width=0.8\textwidth]{media/image1.jpeg}
+\end{center}
+
+\subsection{Likert量表}
+
+计分规则：1 = 非常不认可 → 2 = 不认可 → 3 = 中立 → 4 = 认可 → 5 =
+非常认可
+
+请根据你对生成病历的阅读，对以下指标的认可度进行评分：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  生成病历的\textbf{关键信息完整性}（核心诊疗信息、患者基础信息等无遗漏）\\
+  □ 1 非常不认可 □ 2 不认可 □ 3 中立 □ 4 认可 □ 5 非常认可
+\item
+  生成病历的\textbf{医学术语准确性}（术语使用规范、无错用 /
+  滥用医学词汇情况）\\
+  □ 1 非常不认可 □ 2 不认可 □ 3 中立 □ 4 认可 □ 5 非常认可
+\item
+  生成病历的\textbf{逻辑一致性}（病史、检查、诊断、治疗之间逻辑自洽，无矛盾）\\
+  □ 1 非常不认可 □ 2 不认可 □ 3 中立 □ 4 认可 □ 5 非常认可
+\item
+  生成病历的\textbf{临床实用性}（能为诊断、治疗方案制定、后续诊疗提供有效参考）\\
+  □ 1 非常不认可 □ 2 不认可 □ 3 中立 □ 4 认可 □ 5 非常认可
+\item
+  生成病历的\textbf{结构规范性}（符合病历书写规范，字段排布、格式统一有序）\\
+  □ 1 非常不认可 □ 2 不认可 □ 3 中立 □ 4 认可 □ 5 非常认可
+\item
+  生成病历的\textbf{可读性}（语言通顺、表述清晰，无歧义，便于医护人员快速阅读）\\
+  □ 1 非常不认可 □ 2 不认可 □ 3 中立 □ 4 认可 □ 5 非常认可
+\item
+  生成病历的\textbf{安全性}（患者隐私信息无泄露、数据存储 /
+  传输过程安全可靠）\\
+  □ 1 非常不认可 □ 2 不认可 □ 3 中立 □ 4 认可 □ 5 非常认可
+\end{enumerate}

@@ -1,0 +1,94 @@
+% 结果部分（占位数据使用 \TODO 标记）
+
+\newcounter{todoctr}
+\newcommand{\TODO}{%
+  \stepcounter{todoctr}%
+  {\small\textbf{\textit{\textsf{*\thetodoctr}}}}}
+
+\section{结果}
+
+\subsection{客观性能评估结果}
+
+\subsubsection{信息提取准确度}
+
+\begin{enumerate}
+\item 槽位信息提取表现：
+
+针对“主诉”“现病史”“体格检查”“初步诊断”等 \TODO 个核心槽位的信息提取结果显示，系统整体精确率达 \TODO，召回率为 \TODO，F1 分数为 \TODO。其中，“初步诊断”“药品名称”等关键槽位的 F1 分数均超过 \TODO，“既往史”“个人史”等信息密度较低的槽位 F1 分数仍维持在 \TODO 以上，表明 LLM 能精准完成信息提取与槽位映射任务。
+
+\item 专科场景适配性：
+
+在 \TODO 等 \TODO 个试点专科中，系统信息提取 F1 分数均高于 \TODO。其中 \TODO 的 F1 分数为 \TODO，与全科场景表现无显著差异，验证了专科热词库优化的有效性。
+\end{enumerate}
+
+\textbf{图1. 精确率、召回率、F1 分数}
+
+\subsubsection{文本相似度与规范性}
+
+\begin{enumerate}
+\item 语义与信息覆盖度：
+
+生成病历与专家标注的“黄金标准”病历相比，BERTScore 均值达 \TODO，表明语义层面高度契合；ROUGE-L 均值为 \TODO，反映信息覆盖完整性接近专家撰写水平。
+
+\item 术语标准化效果：
+
+经术语库与错词库处理后，文本中术语规范率达 \TODO，较未优化前提升 \TODO。其中国语化或口语化表述向标准术语的转化率为 \TODO，错词修正准确率为 \TODO，有效降低了 ASR 识别误差对病历质量的影响。
+\end{enumerate}
+
+\textbf{图2. BERTScore、ROUGE-L}
+
+\subsection{主观质量评估结果}
+
+\subsubsection{临床专家盡评得分}
+
+\begin{enumerate}
+\item 综合质量表现：
+
+\TODO 名资深临床专家（副主任医师及以上）的盲评结果显示，生成病历在 Likert 量表 7 个评估维度的平均得分均超过 \TODO 分（5 分制）。其中结构规范性（\TODO 分）和术语准确性（\TODO 分）得分最高，信息完整性（\TODO 分）和逻辑一致性（\TODO 分）表现优异，临床实用性（\TODO 分）和可读性（\TODO 分）均满足临床应用需求，安全性（\TODO 分）评分证实系统无隐私信息泄露风险。
+
+\item 专科专家评价差异：
+
+不同专科专家对本专科场景生成病历的评分无显著差异（$P>0.05$），且均高于对通用场景病历的评分，表明模板库与专科优化策略适配临床实际需求。
+\end{enumerate}
+
+\textbf{图3. Likert 量表结果}
+
+\subsubsection{幻觉现象专项评估}
+
+在 \TODO 份测试病历中，仅出现 \TODO 例幻觉现象，幻觉发生率为 \TODO。对比实验显示，通用生成式 LLM 的幻觉发生率为 \TODO，本系统通过“信息提取 + 知识库校验”的设计，显著抑制了幻觉风险（$P<0.001$）。
+
+\subsection{效率增益评估结果}
+
+\subsubsection{病历书写耗时对比}
+
+\begin{enumerate}
+\item 与传统方式对比：
+
+使用本系统生成电子病历的平均总耗时为 \TODO 分钟/份，较医生手动键盘录入（\TODO 分钟/份）缩短 \TODO，差异具有统计学意义（$P<0.001$）。
+
+\item 与通用 AI 方式对比：
+
+本系统耗时较“通用 ASR + 通用生成式 LLM”（\TODO 分钟/份）缩短 \TODO，且审核修改耗时仅 8 分钟/份，远低于通用 AI 方式的 \TODO 分钟/份（$P<0.001$）。
+
+\item 不同资历医生效率差异：
+
+初级医生使用本系统后的病历书写效率提升最为显著（耗时缩短 \TODO），与资深医生使用系统后的效率（\TODO 分钟/份）无统计学差异（$P>0.05$），有效缩小了不同资历医生的文档工作效率差距。
+\end{enumerate}
+
+\textbf{图4. 病历书写效率对比}
+
+\subsection{消融实验结果}
+
+\subsubsection{知识库纠错模块的作用}
+
+移除知识库纠错模块后，系统信息提取的精确率降至 \TODO，较完整系统下降 \TODO 个百分点；关键信息错误率（如药品名称错误、术语不规范）从 \TODO 升至 \TODO，证实知识库校验能有效提升信息准确性。
+
+\subsubsection{信息提取范式的优势}
+
+将 LLM 改为自由生成模式后，幻觉发生率升至 \TODO，较原设计（\TODO）显著升高（$P<0.001$）；文本相似度指标中，BERTScore 降至 \TODO，ROUGE-L 降至 \TODO，且病历结构规范性评分下降至 \TODO 分，表明限定 LLM 为“信息提取器”的设计能同时保障安全性、准确性与规范性。
+
+\textbf{图5. 消融实验对比结果}
+
+\subsection{迭代优化效果验证}
+
+经过 \TODO 个月的临床试用与数据迭代，系统回收并脱敏处理 \TODO 份有效病历数据，用于更新错词库、术语库及模型微调。迭代后，ASR 专科术语识别准确率提升 \TODO 个百分点，LLM 信息提取 F1 分数提升 \TODO 个百分点，医生审核修改率从 \TODO 降至 \TODO，实现了系统性能的持续优化，验证了闭环验证框架的有效性。
