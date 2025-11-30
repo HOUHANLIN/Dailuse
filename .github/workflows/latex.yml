@@ -17,6 +17,7 @@ jobs:
         uses: xu-cheng/latex-action@v3
         with:
           root_file: main.tex   # 如果你的主文件不是这个名字，改掉它
+          latexmk_use_xelatex: true
 
       - name: Upload PDF as artifact
         uses: actions/upload-artifact@v4
