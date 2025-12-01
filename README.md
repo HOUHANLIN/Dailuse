@@ -1,4 +1,4 @@
-# Dailuse
+# EMR-Paper
 
 基于语音输入和大语言模型（LLM）的生成式电子病历系统论文 LaTeX 工程。
 
