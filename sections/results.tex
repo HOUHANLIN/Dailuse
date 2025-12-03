@@ -1,9 +1,12 @@
 % 结果部分（占位数据使用 \TODO 标记）
 
-\newcounter{todoctr}
-\newcommand{\TODO}{%
+\makeatletter
+\@ifundefined{c@todoctr}{\newcounter{todoctr}}{}
+\makeatother
+\providecommand{\TODO}{%
   \stepcounter{todoctr}%
   {\small\textbf{\textit{\textsf{*\thetodoctr}}}}}
+\setcounter{todoctr}{0}
 
 \section{结果}
 
