@@ -1,66 +1,64 @@
-% 图表统一管理文件（根据 1.md 整理）
-% TODO: 将 \includegraphics 中的文件名替换为实际图片路径（例如导出的 PDF/PNG）
+% 图表统一管理文件（根据 output.md 与实际图片文件整理）
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\textwidth]{media/fig1}
+  \includegraphics[width=\textwidth]{media/media/大模型评估流程.jpg}
   \caption{模型–方法–任务的医疗大模型评估总流程，展示多模型比较、方法配置以及多类医疗任务在“定量评估–临床读者研究–安全分析”三阶段闭环中的整体关系。}
   \label{fig:overall_workflow}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\textwidth]{media/fig2}
+  \includegraphics[width=\textwidth]{media/media/端到端临床流程.jpg}
   \caption{实验设计步骤与端到端临床落地流程，从语音输入与 ASR 预处理，经信息提取与槽位填充、知识库校验，到结构化病历生成与应用场景（初诊、随访、前病史采集等）的闭环工作流。}
   \label{fig:system_workflow}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\textwidth]{media/fig3}
+  \includegraphics[width=\textwidth]{media/media/微信助手交互.jpg}
   \caption{微信助手交互界面示意，从患者通过智能助手完成语音/文本问答，到系统基于提示词与大模型将自然语言对话转换为结构化病历的实际生成流程。}
   \label{fig:wechat_interaction}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\textwidth]{media/fig4}
+  \includegraphics[width=\textwidth]{media/media/多提示词信息提取性能.jpg}
   \caption{GPT-3.5 与 GPT-4 在多提示词设置下信息提取任务的精确率、召回率与 F1 分数比较（箱线/蜡烛图），展示不同提示词与不同评分者下性能差异。}
   \label{fig:multi_prompt_performance}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\textwidth]{media/fig5}
+  \includegraphics[width=\textwidth]{media/media/文本相似度与规范性.jpg}
   \caption{文本相似度与规范性结果：BERTScore 与 ROUGE-L 指标对比条形图，反映系统生成病历在语义一致性和信息覆盖度方面相较基线方法的优势。}
   \label{fig:text_similarity}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\textwidth]{media/fig6}
+  \includegraphics[width=\textwidth]{media/media/偏好与风险对比.jpg}
   \caption{医疗大模型与临床医生在病历摘要任务中的偏好与风险对比，包括偏好量表、各任务得分、读者偏好分布、临床危害程度评估以及典型实例示例。}
   \label{fig:preference_risk}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\textwidth]{media/fig7}
+  \includegraphics[width=\textwidth]{media/media/病历书写耗时对比.jpg}
   \caption{病历书写耗时对比小提琴图，在整体、急诊、单科会诊和多科会诊等不同临床场景中，对比人工书写与本系统辅助书写的时间分布与效率增益。}
   \label{fig:efficiency_violin}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\textwidth]{media/fig8}
+  \includegraphics[width=\textwidth]{media/media/主观质量雷达图.jpg}
   \caption{Likert 雷达图展示临床专家在主诉、既往史、检查、诊断、治疗计划等多维度上的主观质量评分分布，用于补充主观评分的细粒度差异信息。}
   \label{fig:likert_radar}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\textwidth]{media/fig9}
+  \includegraphics[width=\textwidth]{media/media/消融实验对比.jpg}
   \caption{系统完整版本与消融版本（去除知识库纠错或改为自由生成式 LLM）的客观与主观指标对比，包括信息提取 F1 分数、文本相似度指标及幻觉发生率等。}
   \label{fig:ablation}
 \end{figure}
-
